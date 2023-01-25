@@ -1,3 +1,3 @@
-service-two:
-  image: local-repo/service-two-loadtesting
-  tag: loadtesting
+service-two: !!omap
+- image: local-repo/service-two-kraken
+- tag: kraken
