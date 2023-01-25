@@ -48,8 +48,7 @@ def get_values_from_file(service, file):
 if __name__ == "__main__":
     services = ["service-one", "service-two"]
     config_file = os.getenv('CONFIG_FILE', 'pipeline/config.yaml')
-    #environment = os.getenv('ENVIRONMENT')
-    environment = "kraken"
+    environment = os.getenv('ENVIRONMENT')
     print(f"config_file: {config_file}, environment: {environment}, services: {services}")
     config = read_yaml_file(config_file)
     if config is None:
