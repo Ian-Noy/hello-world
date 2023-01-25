@@ -1,0 +1,3 @@
+service-one:
+  image: local-repo/service-one-phoenix
+  tag: ebfa2f4
