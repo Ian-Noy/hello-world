@@ -6,6 +6,7 @@ on:
       environment:
         description: 'Environment to copy latest service images'
         required: true
+        default: 'phoenix'
         type: choice
         options:
         - phoenix
@@ -18,5 +19,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          echo "Environment: $ENVIRONMENT"
-          
+          echo "Environment: ${{ inputs.environment }}"
+        
