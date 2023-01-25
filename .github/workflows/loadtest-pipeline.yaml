@@ -44,5 +44,7 @@ jobs:
         uses: devops-infra/action-pull-request@v0.5.3
         with:
           github_token: ${{ secrets.GH_PERSONAL }}
+          source_branch: development
+          target_branch: master
 
         
