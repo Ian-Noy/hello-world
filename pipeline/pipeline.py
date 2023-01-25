@@ -1,6 +1,6 @@
 import yaml
 import os
-import json
+import collections
 from ruamel.yaml import YAML
 
 def read_yaml_file(file):
@@ -17,43 +17,44 @@ def read_yaml_file(file):
         exit()
 
 
-def update_file():
+def update_file(service, changes, values_file):
     """
     This method updates changes in application chart values file
     :param: None
     :return: None
     """
-    change_list = json.loads(changes)
-    print("Changes to be updated - ", change_list)
     values_file_data = YAML().load(open(values_file))
-    for change in change_list:
-        value_path = change.get("jsonPath").split(".")
-        update_value = values_file_data
-        print(value_path)
-        for path in value_path[:-1]:
-            update_value = update_value.get(path)
-        try:
-            update_value[value_path[-1]] = change.get("value")
-        except Exception as e:
-            print(key + " - ", e)
+    update_value = values_file_data
+    try:
+        update_value[service] = changes
+    except Exception as e:
+        print(key + " - ", e)
     with open(values_file, 'w') as fp:
         YAML().dump(values_file_data, fp)
 
-def get_value_from_file(key, file):
+
+def get_values_from_file(service, file):
     """
-    This method will return the request value
-    :param key: Key to lookup
+    This method will return the requested service image and tag values
+    :param service: Service to lookup
     :param file: File to look for specified key
     :return: Value
     """
-    print(f"key: {key}, file: {file}")
     file_data = read_yaml_file(file)
-    print(file_data.get(key))
+    return file_data.get(service)
+
+
+def convert_to_ordered_dict(dict):
+    order_of_keys = ["image", "tag"]
+    list_of_tuples = [(key, dict[key]) for key in order_of_keys]
+    return collections.ordereddict(list_of_tuples)
+
 
 if __name__ == "__main__":
     services = ["service-one", "service-two"]
     config_file = os.getenv('CONFIG_FILE', 'pipeline/config.yaml')
-    environment = os.getenv('ENVIRONMENT')
+    #environment = os.getenv('ENVIRONMENT')
+    environment = "kraken"
     print(f"config_file: {config_file}, environment: {environment}, services: {services}")
     config = read_yaml_file(config_file)
     if config is None:
@@ -62,21 +63,29 @@ if __name__ == "__main__":
 
     for service in services:
         key = service + "-" + environment
+        lt_key = service + "-loadtesting"
         charts_info = config.get(key)
-        if charts_info is None or charts_info == "":
+        lt_charts_info = config.get(lt_key)
+        if charts_info is None or charts_info == "" or lt_charts_info is None or lt_charts_info == "":
             print("chartsInfo does not exist in config file")
             exit()
         chart_root = charts_info.get("chartRoot")
-        if chart_root is None or chart_root == "":
+        lt_chart_root = lt_charts_info.get("chartRoot")
+        if chart_root is None or chart_root == "" or lt_charts_info is None or lt_charts_info == "":
             print("chartRoot value does not exist in chartsInfo")
             exit()
-        values_file_name = charts_info.get("file")
-        if values_file_name is None or values_file_name == "":
+        service_file_name = charts_info.get("file")
+        lt_service_file_name = lt_charts_info.get("file")
+        if service_file_name is None or service_file_name == "" or lt_service_file_name is None or lt_service_file_name == "":
             print("valuesFile value does not exist in chartsInfo")
             exit()
-        values_file = chart_root + "/" + values_file_name
-        print(f"Values_file: {values_file}")
-        service_key = service + ".image" 
-        get_value_from_file(service_key, values_file)
+        service_file = chart_root + "/" + service_file_name
+        lt_service_file_name = lt_chart_root + "/" + lt_service_file_name
+        service_values = get_values_from_file(service, service_file)
+        if service_values is None or service_values == "":
+            print("serviceValues not populated")
+            exit()
+        update_file(service, convert_to_ordered_dict(service_values), lt_service_file_name)
+        
         
         
