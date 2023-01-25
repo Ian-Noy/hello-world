@@ -39,4 +39,10 @@ jobs:
           pip install pyyaml
           pip install ruamel.yaml
           python -u pipeline/pipeline.py
+
+      - name: Create Pull Request
+        uses: devops-infra/action-pull-request@v0.5.3
+        with:
+          github_token: ${{ secrets.GH_PERSONAL }}
+
         
