@@ -48,7 +48,7 @@ def get_value_from_file(key, file):
     """
     print(f"key: {key}, file: {file}")
     file_data = read_yaml_file(file)
-    print(file_data)
+    print(file_data.get(key))
 
 if __name__ == "__main__":
     services = ["service-one", "service-two"]
