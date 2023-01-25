@@ -47,7 +47,7 @@ def get_values_from_file(service, file):
 def convert_to_ordered_dict(dict):
     order_of_keys = ["image", "tag"]
     list_of_tuples = [(key, dict[key]) for key in order_of_keys]
-    return collections.ordereddict(list_of_tuples)
+    return collections.OrderedDict(list_of_tuples)
 
 
 if __name__ == "__main__":
