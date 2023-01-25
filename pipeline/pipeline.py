@@ -76,6 +76,7 @@ if __name__ == "__main__":
             exit()
         values_file = chart_root + "/" + values_file_name
         print(f"Values_file: {values_file}")
-        get_value_from_file(values_file)
+        service_key = service + ".image" 
+        get_value_from_file(service_key, values_file)
         
         
