@@ -45,10 +45,10 @@ jobs:
         with:
           token: ${{ secrets.GH_PERSONAL }}
           body: |
-            Automated loadtest pipeline.
+            Automated loadtest pipeline using service images from ${{ inputs.environment }}
           branch: automated-pipeline
           delete-branch: true
           labels: loadtest-pipeline
-          title: "[Pipeline] Loadtest"
+          title: "[Loadtest-Pipeline] Kick off loadtest using ${{ inputs.environment }} images"
 
         
