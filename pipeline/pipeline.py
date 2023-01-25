@@ -40,7 +40,7 @@ def update_file():
         YAML().dump(values_file_data, fp)
 
 if __name__ == "__main__":
-    services = ["service-one"]
+    services = ["service-one", "service-two"]
     config_file = os.getenv('CONFIG_FILE', 'pipeline/config.yaml')
     environment = os.getenv('ENVIRONMENT')
     print(f"config_file: {config_file}, environment: {environment}, services: {services}")
