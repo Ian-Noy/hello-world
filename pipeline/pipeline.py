@@ -25,10 +25,11 @@ def update_file(service, changes, values_file):
     """
     values_file_data = YAML().load(open(values_file))
     update_value = values_file_data
-    try:
-        update_value[service] = changes
-    except Exception as e:
-        print(key + " - ", e)
+    for key in update_value[service]:
+        try:
+            update_value[service][key] = changes[key]
+        except Exception as e:
+            print(key + " - ", e)
     with open(values_file, 'w') as fp:
         YAML().dump(values_file_data, fp)
 
@@ -42,12 +43,6 @@ def get_values_from_file(service, file):
     """
     file_data = read_yaml_file(file)
     return file_data.get(service)
-
-
-def convert_to_ordered_dict(dict):
-    order_of_keys = ["image", "tag"]
-    list_of_tuples = [(key, dict[key]) for key in order_of_keys]
-    return collections.OrderedDict(list_of_tuples)
 
 
 if __name__ == "__main__":
@@ -85,7 +80,7 @@ if __name__ == "__main__":
         if service_values is None or service_values == "":
             print("serviceValues not populated")
             exit()
-        update_file(service, convert_to_ordered_dict(service_values), lt_service_file_name)
+        update_file(service, service_values, lt_service_file_name)
         
         
         
