@@ -21,8 +21,6 @@ jobs:
     steps:
       - name: Checking out the repo
         uses: actions/checkout@v3
-        with:
-          ref: development
 
       - name: Log Inputs
         run: |
@@ -43,10 +41,14 @@ jobs:
           python -u pipeline/pipeline.py
 
       - name: Create Pull Request
-        uses: devops-infra/action-pull-request@v0.5.3
+        uses: peter-evans/create-pull-request@v3
         with:
-          github_token: ${{ secrets.GH_PERSONAL }}
-          source_branch: development
-          target_branch: master
+          token: ${{ secrets.GH_PERSONAL }}
+          body: |
+            Automated loadtest pipeline.
+          branch: automated-pipeline
+          delete-branch: true
+          labels: loadtest-pipeline
+          title: "[Pipeline] Loadtest"
 
         
