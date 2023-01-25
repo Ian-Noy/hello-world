@@ -39,6 +39,17 @@ def update_file():
     with open(values_file, 'w') as fp:
         YAML().dump(values_file_data, fp)
 
+def get_value_from_file(key, file):
+    """
+    This method will return the request value
+    :param key: Key to lookup
+    :param file: File to look for specified key
+    :return: Value
+    """
+    print(f"key: {key}, file: {file}")
+    file_data = read_yaml_file(file)
+    print(file_data)
+
 if __name__ == "__main__":
     services = ["service-one", "service-two"]
     config_file = os.getenv('CONFIG_FILE', 'pipeline/config.yaml')
@@ -65,3 +76,6 @@ if __name__ == "__main__":
             exit()
         values_file = chart_root + "/" + values_file_name
         print(f"Values_file: {values_file}")
+        get_value_from_file(values_file)
+        
+        
