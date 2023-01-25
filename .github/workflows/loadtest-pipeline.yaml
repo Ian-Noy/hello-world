@@ -1,0 +1,22 @@
+name: "pipeline/loadtesting"
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to copy latest service images'
+        required: true
+        type: choice
+        options:
+        - phoenix
+        - griffin
+        - kraken
+        - hydra
+      
+jobs:
+  log-the-inputs:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "Environment: $ENVIRONMENT"
+          
