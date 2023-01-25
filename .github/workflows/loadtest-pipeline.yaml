@@ -15,9 +15,25 @@ on:
         - hydra
       
 jobs:
-  log-the-inputs:
+  pipeline:
     runs-on: ubuntu-latest
+
     steps:
-      - run: |
-          echo "Environment: ${{ inputs.environment }}"
+      - name: Log Inputs
+        run: |
+          echo "Environment: $ENVIRONMENT"
+        env:
+          ENVIRONMENT: ${{ inputs.environment }}
+
+      - name: Setup python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.7'
+
+      - name: Automated pipeline
+        id: application
+        run: |
+          pip install pyyaml
+          pip install ruamel.yaml
+          python -u pipeline/pipeline.py
         

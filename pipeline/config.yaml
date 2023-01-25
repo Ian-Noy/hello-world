@@ -1,0 +1,16 @@
+---
+service-one-griffin:
+  chartRoot: charts/service-one
+  file: values-do-griffin.yaml
+service-one-hydra:
+  chartRoot: charts/service-one
+  file: values-do-hydra.yaml
+service-one-kraken:
+  chartRoot: charts/service-one
+  file: values-do-kraken.yaml
+service-one-phoenix:
+  chartRoot: charts/service-one
+  file: values-do-phoenix.yaml
+service-one-loadtesting:
+  chartRoot: charts/service-one
+  file: values-lt.yaml
