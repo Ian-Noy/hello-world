@@ -14,3 +14,19 @@ service-one-phoenix:
 service-one-loadtesting:
   chartRoot: charts/service-one
   file: values-lt.yaml
+
+service-two-griffin:
+  chartRoot: charts/service-two
+  file: values-do-griffin.yaml
+service-two-hydra:
+  chartRoot: charts/service-two
+  file: values-do-hydra.yaml
+service-two-kraken:
+  chartRoot: charts/service-two
+  file: values-do-kraken.yaml
+service-two-phoenix:
+  chartRoot: charts/service-two
+  file: values-do-phoenix.yaml
+service-two-loadtesting:
+  chartRoot: charts/service-two
+  file: values-lt.yaml

@@ -1,0 +1,3 @@
+service-two:
+  image: local-repo/service-two-loadtesting
+  tag: loadtesting
