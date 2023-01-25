@@ -1,4 +1,4 @@
-name: "pipeline/loadtesting"
+name: pipeline.yaml
 
 on:
   workflow_dispatch:
@@ -19,6 +19,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checking out the repo
+        uses: actions/checkout@v3
+        
       - name: Log Inputs
         run: |
           echo "Environment: $ENVIRONMENT"
