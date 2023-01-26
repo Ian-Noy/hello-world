@@ -1,6 +1,5 @@
 import yaml
 import os
-import collections
 from ruamel.yaml import YAML
 
 def read_yaml_file(file):
@@ -20,7 +19,9 @@ def read_yaml_file(file):
 def update_file(service, changes, values_file):
     """
     This method updates changes in application chart values file
-    :param: None
+    :param service: Name of service to update
+    :param changes: Dict containing image and tag values to update
+    :param values_file: Path to values file that will be updated
     :return: None
     """
     values_file_data = YAML().load(open(values_file))
@@ -34,15 +35,25 @@ def update_file(service, changes, values_file):
         YAML().dump(values_file_data, fp)
 
 
-def get_values_from_file(service, file):
+def find_service_file(service, environment):
     """
-    This method will return the requested service image and tag values
-    :param service: Service to lookup
-    :param file: File to look for specified key
-    :return: Value
+    This method will find the service file for a given environment
+    :param service: Name of service
+    :param environment: Environment to find
+    :return: Path of the service file
     """
-    file_data = read_yaml_file(file)
-    return file_data.get(service)
+    key = service + "-" + environment
+    charts_info = config.get(key)
+    if charts_info is None or charts_info == "":
+        raise ValueError("chartsInfo does not exist in config file")
+    chart_root = charts_info.get("chartRoot")
+    if chart_root is None or chart_root == "":
+        raise ValueError("chartsInfo does not exist in config file")
+    service_file_name = charts_info.get("file")
+    if service_file_name is None or service_file_name == "":
+        raise ValueError("valuesFile value does not exist in chartsInfo")
+    
+    return chart_root + "/" + service_file_name
 
 
 if __name__ == "__main__":
@@ -56,30 +67,17 @@ if __name__ == "__main__":
         exit()
 
     for service in services:
-        key = service + "-" + environment
-        lt_key = service + "-loadtesting"
-        charts_info = config.get(key)
-        lt_charts_info = config.get(lt_key)
-        if charts_info is None or charts_info == "" or lt_charts_info is None or lt_charts_info == "":
-            print("chartsInfo does not exist in config file")
-            exit()
-        chart_root = charts_info.get("chartRoot")
-        lt_chart_root = lt_charts_info.get("chartRoot")
-        if chart_root is None or chart_root == "" or lt_charts_info is None or lt_charts_info == "":
-            print("chartRoot value does not exist in chartsInfo")
-            exit()
-        service_file_name = charts_info.get("file")
-        lt_service_file_name = lt_charts_info.get("file")
-        if service_file_name is None or service_file_name == "" or lt_service_file_name is None or lt_service_file_name == "":
-            print("valuesFile value does not exist in chartsInfo")
-            exit()
-        service_file = chart_root + "/" + service_file_name
-        lt_service_file_name = lt_chart_root + "/" + lt_service_file_name
-        service_values = get_values_from_file(service, service_file)
+        try:
+            env_service_file = find_service_file(service, environment)
+            lt_service_file = find_service_file(service, "loadtesting")
+        except ValueError:
+            raise
+
+        service_values = read_yaml_file(env_service_file).get(service)
         if service_values is None or service_values == "":
             print("serviceValues not populated")
             exit()
-        update_file(service, service_values, lt_service_file_name)
+        update_file(service, service_values, lt_service_file)
         
         
         
